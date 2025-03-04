@@ -146,7 +146,9 @@ export default function SendGridVisualizationPage() {
     <div className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">SendGrid API Documentation</h1>
+          <h1 className="text-3xl font-bold text-blue-600">
+            SendGrid API Documentation
+          </h1>
           <Link
             href="/"
             className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
@@ -156,24 +158,34 @@ export default function SendGridVisualizationPage() {
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Overview</h2>
-          <p className="mb-4">{data.description}</p>
+          <h2 className="text-xl font-semibold mb-4 text-blue-500">Overview</h2>
+          <p className="mb-4 text-gray-700">{data.description}</p>
           <div className="grid grid-cols-2 gap-4 mt-4">
             <div className="bg-blue-50 p-4 rounded">
-              <span className="text-sm text-blue-500">Base URL</span>
-              <p className="font-mono">{data.baseUrl}</p>
+              <span className="text-sm text-blue-600 font-medium">
+                Base URL
+              </span>
+              <p className="font-mono text-gray-800">{data.baseUrl}</p>
             </div>
             <div className="bg-blue-50 p-4 rounded">
-              <span className="text-sm text-blue-500">Last Updated</span>
-              <p>{new Date(data.lastUpdated).toLocaleString()}</p>
+              <span className="text-sm text-blue-600 font-medium">
+                Last Updated
+              </span>
+              <p className="text-gray-800">
+                {new Date(data.lastUpdated).toLocaleString()}
+              </p>
             </div>
             <div className="bg-blue-50 p-4 rounded">
-              <span className="text-sm text-blue-500">Total Endpoints</span>
-              <p>{data.endpoints?.length || 0}</p>
+              <span className="text-sm text-blue-600 font-medium">
+                Total Endpoints
+              </span>
+              <p className="text-gray-800">{data.endpoints?.length || 0}</p>
             </div>
             <div className="bg-blue-50 p-4 rounded">
-              <span className="text-sm text-blue-500">Categories</span>
-              <p>{data.categories?.length || 0}</p>
+              <span className="text-sm text-blue-600 font-medium">
+                Categories
+              </span>
+              <p className="text-gray-800">{data.categories?.length || 0}</p>
             </div>
           </div>
           <button
@@ -185,7 +197,9 @@ export default function SendGridVisualizationPage() {
         </div>
 
         <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Filter Endpoints</h2>
+          <h2 className="text-xl font-semibold mb-4 text-blue-500">
+            Filter Endpoints
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
@@ -230,9 +244,9 @@ export default function SendGridVisualizationPage() {
           {filteredEndpoints.map((endpoint, index) => (
             <div
               key={index}
-              className="bg-white rounded-lg shadow overflow-hidden"
+              className="bg-white rounded-lg shadow overflow-hidden border border-gray-200"
             >
-              <div className="flex items-center p-4 border-b">
+              <div className="flex items-center p-4 border-b bg-gray-50">
                 <span
                   className={`px-2 py-1 rounded text-xs font-medium mr-3
                   ${
@@ -257,23 +271,27 @@ export default function SendGridVisualizationPage() {
                 >
                   {endpoint.method}
                 </span>
-                <span className="font-mono text-gray-900">{endpoint.path}</span>
+                <span className="font-mono text-gray-900 font-semibold">
+                  {endpoint.path}
+                </span>
                 {endpoint.category && (
-                  <span className="ml-auto px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                  <span className="ml-auto px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs">
                     {endpoint.category}
                   </span>
                 )}
               </div>
 
               <div className="p-4">
-                <h3 className="font-medium text-gray-900 mb-2">Description</h3>
+                <h3 className="font-medium text-gray-900 mb-2 text-blue-600">
+                  Description
+                </h3>
                 <p className="text-gray-700 mb-4">
                   {endpoint.description || 'No description available'}
                 </p>
 
                 {endpoint.parameters && endpoint.parameters.length > 0 && (
                   <div className="mt-4">
-                    <h4 className="font-medium text-gray-900 mb-2">
+                    <h4 className="font-medium text-blue-500 mb-2">
                       Parameters
                     </h4>
                     <div className="overflow-x-auto">
@@ -327,7 +345,7 @@ export default function SendGridVisualizationPage() {
 
                 {endpoint.headers && endpoint.headers.length > 0 && (
                   <div className="mt-4">
-                    <h4 className="font-medium text-gray-900 mb-2">Headers</h4>
+                    <h4 className="font-medium text-blue-500 mb-2">Headers</h4>
                     <div className="overflow-x-auto">
                       <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
@@ -373,7 +391,7 @@ export default function SendGridVisualizationPage() {
 
                 {endpoint.responses && endpoint.responses.length > 0 && (
                   <div className="mt-4">
-                    <h4 className="font-medium text-gray-900 mb-2">
+                    <h4 className="font-medium text-blue-500 mb-2">
                       Responses
                     </h4>
                     <div className="space-y-2">
@@ -401,14 +419,35 @@ export default function SendGridVisualizationPage() {
                             >
                               {response.status}
                             </span>
-                            <span className="text-sm">
+                            <span className="text-sm font-medium text-gray-800">
                               {response.description || ''}
                             </span>
                           </div>
+
+                          {/* Display schema if available */}
                           {response.schema && (
                             <div className="mt-2">
-                              <pre className="bg-gray-50 p-3 rounded font-mono text-sm overflow-x-auto">
-                                {JSON.stringify(response.schema, null, 2)}
+                              <div className="text-xs text-gray-900 mb-1">
+                                Response Schema:
+                              </div>
+                              <pre className="bg-gray-100 p-3 rounded font-mono text-sm overflow-x-auto border border-gray-200 text-gray-900">
+                                {typeof response.schema === 'object'
+                                  ? JSON.stringify(response.schema, null, 2)
+                                  : response.schema}
+                              </pre>
+                            </div>
+                          )}
+
+                          {/* Display example if available */}
+                          {response.example && (
+                            <div className="mt-2">
+                              <div className="text-xs text-gray-900 mb-1">
+                                Example Response:
+                              </div>
+                              <pre className="bg-gray-100 p-3 rounded font-mono text-sm overflow-x-auto border border-gray-200 text-gray-900">
+                                {typeof response.example === 'object'
+                                  ? JSON.stringify(response.example, null, 2)
+                                  : response.example}
                               </pre>
                             </div>
                           )}
@@ -420,10 +459,10 @@ export default function SendGridVisualizationPage() {
 
                 {endpoint.notes && endpoint.notes.length > 0 && (
                   <div className="mt-4">
-                    <h4 className="font-medium text-gray-900 mb-2">Notes</h4>
+                    <h4 className="font-medium text-blue-500 mb-2">Notes</h4>
                     <ul className="list-disc pl-5 space-y-1">
                       {endpoint.notes.map((note, noteIndex) => (
-                        <li key={noteIndex} className="text-gray-700">
+                        <li key={noteIndex} className="text-gray-800">
                           {note}
                         </li>
                       ))}
@@ -433,9 +472,11 @@ export default function SendGridVisualizationPage() {
 
                 {endpoint.example && (
                   <div className="mt-4">
-                    <h4 className="font-medium text-gray-900 mb-2">Example</h4>
-                    <pre className="bg-gray-50 p-3 rounded font-mono text-sm overflow-x-auto">
-                      {endpoint.example}
+                    <h4 className="font-medium text-blue-500 mb-2">Example</h4>
+                    <pre className="bg-gray-50 p-3 rounded font-mono text-sm overflow-x-auto border border-gray-200 text-gray-800">
+                      {typeof endpoint.example === 'object'
+                        ? JSON.stringify(endpoint.example, null, 2)
+                        : endpoint.example}
                     </pre>
                   </div>
                 )}
