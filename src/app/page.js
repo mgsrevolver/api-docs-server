@@ -245,6 +245,47 @@ export default function HomePage() {
                   </a>
                 </div>
               </div>
+
+              <div className="bg-white overflow-hidden shadow rounded-lg">
+                <div className="px-4 py-5 sm:p-6">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                      <svg
+                        className="h-6 w-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dt className="text-lg font-medium text-gray-900 truncate">
+                        SendGrid API
+                      </dt>
+                      <dd className="flex items-baseline">
+                        <p className="text-sm text-gray-500">
+                          Email delivery and analytics services
+                        </p>
+                      </dd>
+                    </div>
+                  </div>
+                  <div className="mt-5">
+                    <a
+                      href="/view/sendgrid"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                      View SendGrid Documentation
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

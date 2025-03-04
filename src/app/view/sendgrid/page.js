@@ -1,10 +1,9 @@
-// src/app/view/twilio/page.js
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-export default function TwilioVisualizationPage() {
+export default function SendGridVisualizationPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,7 +14,7 @@ export default function TwilioVisualizationPage() {
     async function fetchData() {
       try {
         setLoading(true);
-        const response = await fetch('/api/test/twilio');
+        const response = await fetch('/api/test/sendgrid');
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -30,7 +29,7 @@ export default function TwilioVisualizationPage() {
         }
       } catch (err) {
         setError(err.message);
-        console.error('Error fetching Twilio documentation:', err);
+        console.error('Error fetching SendGrid documentation:', err);
       } finally {
         setLoading(false);
       }
@@ -43,7 +42,7 @@ export default function TwilioVisualizationPage() {
   const handleRefresh = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/test/twilio?refresh=true');
+      const response = await fetch('/api/test/sendgrid?refresh=true');
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -59,7 +58,7 @@ export default function TwilioVisualizationPage() {
       }
     } catch (err) {
       setError(err.message);
-      console.error('Error refreshing Twilio documentation:', err);
+      console.error('Error refreshing SendGrid documentation:', err);
     } finally {
       setLoading(false);
     }
@@ -91,7 +90,7 @@ export default function TwilioVisualizationPage() {
       <div className="min-h-screen p-8 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold mb-6">
-            Loading Twilio Documentation...
+            Loading SendGrid Documentation...
           </h1>
           <div className="animate-pulse">
             <div className="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
@@ -108,7 +107,7 @@ export default function TwilioVisualizationPage() {
       <div className="min-h-screen p-8 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold mb-6">
-            Error Loading Twilio Documentation
+            Error Loading SendGrid Documentation
           </h1>
           <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
             <p>{error}</p>
@@ -129,7 +128,7 @@ export default function TwilioVisualizationPage() {
       <div className="min-h-screen p-8 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold mb-6">No Data Available</h1>
-          <p>No Twilio documentation data is available.</p>
+          <p>No SendGrid documentation data is available.</p>
           <button
             onClick={handleRefresh}
             className="px-4 py-2 mt-4 bg-green-500 text-white rounded hover:bg-green-600"
@@ -147,7 +146,7 @@ export default function TwilioVisualizationPage() {
     <div className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Twilio API Documentation</h1>
+          <h1 className="text-3xl font-bold">SendGrid API Documentation</h1>
           <Link
             href="/"
             className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
@@ -326,6 +325,52 @@ export default function TwilioVisualizationPage() {
                   </div>
                 )}
 
+                {endpoint.headers && endpoint.headers.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="font-medium text-gray-900 mb-2">Headers</h4>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Name
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Required
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Description
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {endpoint.headers.map((header, headerIndex) => (
+                            <tr key={headerIndex}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {header.name}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {header.required ? (
+                                  <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs">
+                                    Required
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                                    Optional
+                                  </span>
+                                )}
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-500">
+                                {header.description || 'No description'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
                 {endpoint.responses && endpoint.responses.length > 0 && (
                   <div className="mt-4">
                     <h4 className="font-medium text-gray-900 mb-2">
@@ -338,38 +383,60 @@ export default function TwilioVisualizationPage() {
                             <span
                               className={`px-2 py-1 rounded text-xs font-medium mr-2
                               ${
-                                response.code >= 200 && response.code < 300
+                                response.status >= 200 && response.status < 300
                                   ? 'bg-green-100 text-green-800'
                                   : ''
                               }
                               ${
-                                response.code >= 300 && response.code < 400
+                                response.status >= 300 && response.status < 400
                                   ? 'bg-yellow-100 text-yellow-800'
                                   : ''
                               }
                               ${
-                                response.code >= 400
+                                response.status >= 400
                                   ? 'bg-red-100 text-red-800'
                                   : ''
                               }
                             `}
                             >
-                              {response.code}
+                              {response.status}
                             </span>
                             <span className="text-sm">
                               {response.description || ''}
                             </span>
                           </div>
-                          {response.example && (
+                          {response.schema && (
                             <div className="mt-2">
                               <pre className="bg-gray-50 p-3 rounded font-mono text-sm overflow-x-auto">
-                                {response.example}
+                                {JSON.stringify(response.schema, null, 2)}
                               </pre>
                             </div>
                           )}
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {endpoint.notes && endpoint.notes.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="font-medium text-gray-900 mb-2">Notes</h4>
+                    <ul className="list-disc pl-5 space-y-1">
+                      {endpoint.notes.map((note, noteIndex) => (
+                        <li key={noteIndex} className="text-gray-700">
+                          {note}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {endpoint.example && (
+                  <div className="mt-4">
+                    <h4 className="font-medium text-gray-900 mb-2">Example</h4>
+                    <pre className="bg-gray-50 p-3 rounded font-mono text-sm overflow-x-auto">
+                      {endpoint.example}
+                    </pre>
                   </div>
                 )}
               </div>
