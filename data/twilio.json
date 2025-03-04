@@ -1,8 +1,0 @@
-{
-  "name": "Twilio",
-  "description": "Twilio APIs for voice, video, messaging, authentication, and more",
-  "baseUrl": "https://api.twilio.com/",
-  "endpoints": [],
-  "categories": [],
-  "lastUpdated": "2025-03-04T19:48:32.389Z"
-}

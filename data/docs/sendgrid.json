@@ -3,7 +3,7 @@
   "title": "SendGrid API Documentation",
   "description": "SendGrid email delivery and analytics services",
   "baseUrl": "https://api.sendgrid.com",
-  "lastUpdated": "2025-03-04T20:15:41.069Z",
+  "lastUpdated": "2025-03-04T21:09:07.314Z",
   "endpoints": [
     {
       "method": "GET",
