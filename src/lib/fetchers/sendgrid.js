@@ -117,7 +117,7 @@ client
     console.error(error);
   });`,
         },
-        // New Email Activity API endpoint
+        // Email Activity API endpoint
         {
           method: 'GET',
           path: '/v3/messages/{msg_id}',
@@ -274,6 +274,229 @@ client
     console.error(error);
   });`,
         },
+        // Account Provisioning API - Create Account endpoint
+        {
+          method: 'POST',
+          path: '/v3/partners/accounts',
+          description:
+            'Creates a new account, with specified offering, under the organization',
+          category: 'Account Provisioning',
+          parameters: [
+            {
+              name: 'profile.first_name',
+              type: 'string',
+              required: false,
+              description: 'First name of the account holder',
+              in: 'body',
+            },
+            {
+              name: 'profile.last_name',
+              type: 'string',
+              required: false,
+              description: 'Last name of the account holder',
+              in: 'body',
+            },
+            {
+              name: 'profile.company_name',
+              type: 'string',
+              required: false,
+              description: 'Company name of the account holder',
+              in: 'body',
+            },
+            {
+              name: 'profile.company_website',
+              type: 'string',
+              required: false,
+              description: 'Company website of the account holder',
+              in: 'body',
+            },
+            {
+              name: 'profile.email',
+              type: 'string',
+              required: false,
+              description: 'Email of the account holder',
+              in: 'body',
+            },
+            {
+              name: 'profile.phone',
+              type: 'string',
+              required: false,
+              description:
+                'Phone number with E.164 standard format: [+][country code][subscriber number]',
+              in: 'body',
+            },
+            {
+              name: 'profile.timezone',
+              type: 'string',
+              required: false,
+              description:
+                'Area/Location as listed in the IANA Time Zone database',
+              in: 'body',
+            },
+            {
+              name: 'offerings[].name',
+              type: 'string',
+              required: true,
+              description: 'Name of the offering',
+              in: 'body',
+            },
+            {
+              name: 'offerings[].type',
+              type: 'string',
+              required: true,
+              description: 'Type of offering (must be "package" or "addon")',
+              in: 'body',
+            },
+            {
+              name: 'offerings[].quantity',
+              type: 'integer',
+              required: false,
+              description:
+                'Quantity of the specified addon. If offering type is package, quantity must be 1',
+              in: 'body',
+            },
+          ],
+          headers: [
+            {
+              name: 'Authorization',
+              description: 'Bearer <<YOUR_API_KEY_HERE>>',
+              required: true,
+            },
+            {
+              name: 'T-Test-Account',
+              description:
+                'OPTIONAL Custom request header provided ONLY for a test account',
+              required: false,
+            },
+          ],
+          responses: [
+            {
+              status: 201,
+              description: 'Created',
+              schema: {
+                type: 'object',
+                properties: {
+                  account_id: {
+                    type: 'string',
+                    description: 'Twilio SendGrid account ID',
+                  },
+                },
+              },
+            },
+            {
+              status: 400,
+              description: 'Bad Request',
+            },
+            {
+              status: 401,
+              description: 'Unauthorized',
+            },
+            {
+              status: 403,
+              description: 'Forbidden',
+            },
+            {
+              status: 500,
+              description: 'Internal Server Error',
+            },
+            {
+              status: 502,
+              description: 'Bad Gateway',
+            },
+            {
+              status: 503,
+              description: 'Service Unavailable',
+            },
+            {
+              status: 504,
+              description: 'Gateway Timeout',
+            },
+          ],
+          notes: [
+            'The Account Provisioning API is for companies that have a formal reseller partnership with Twilio SendGrid.',
+            'You can access Twilio SendGrid sub-account functionality without becoming a reseller using the Twilio SendGrid Subusers feature, available with Pro and Premier plans.',
+            'The response to a new account creation is the Twilio Sendgrid account ID, which should be recorded for future use.',
+          ],
+          example: `const client = require("@sendgrid/client");
+client.setApiKey(process.env.SENDGRID_API_KEY);
+
+const data = {
+  profile: {
+    first_name: "Sender",
+    last_name: "Wiz",
+    company_name: "Twilio SendGrid",
+    company_website: "https://sendgrid.com",
+    email: "test@test.com",
+    timezone: "Asia/Tokyo",
+  },
+  offerings: [
+    {
+      name: "org.ei.free.v1",
+      type: "package",
+      quantity: 1,
+    },
+  ],
+};
+
+const request = {
+  url: \`/v3/partners/accounts\`,
+  method: "POST",
+  body: data,
+};
+
+client
+  .request(request)
+  .then(([response, body]) => {
+    console.log(response.statusCode);
+    console.log(response.body);
+  })
+  .catch((error) => {
+    console.error(error);
+  });`,
+          alternativeExamples: [
+            {
+              title: 'Create test customer account',
+              code: `const client = require("@sendgrid/client");
+client.setApiKey(process.env.SENDGRID_API_KEY);
+
+const headers = { "T-Test-Account": "true" };
+const data = {
+  profile: {
+    first_name: "Sender",
+    last_name: "Wiz",
+    company_name: "Twilio SendGrid",
+    company_website: "https://sendgrid.com",
+    email: "test@test.com",
+    timezone: "Asia/Tokyo",
+  },
+  offerings: [
+    {
+      name: "org.ei.free.v1",
+      type: "package",
+      quantity: 1,
+    },
+  ],
+};
+
+const request = {
+  url: \`/v3/partners/accounts\`,
+  method: "POST",
+  headers: headers,
+  body: data,
+};
+
+client
+  .request(request)
+  .then(([response, body]) => {
+    console.log(response.statusCode);
+    console.log(response.body);
+  })
+  .catch((error) => {
+    console.error(error);
+  });`,
+            },
+          ],
+        },
       ],
 
       categories: [
@@ -285,6 +508,11 @@ client
         {
           name: 'Email Activity',
           description: 'Query and inspect details about your sent messages',
+          endpoints: [], // Will be populated below
+        },
+        {
+          name: 'Account Provisioning',
+          description: 'Manage customer accounts for Twilio SendGrid resellers',
           endpoints: [], // Will be populated below
         },
       ],
