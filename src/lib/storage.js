@@ -1,148 +1,112 @@
 // src/lib/storage.js
 import fs from 'fs';
 import path from 'path';
-import { promises as fsPromises } from 'fs';
 
-// Define the storage directory
 const STORAGE_DIR = path.join(process.cwd(), 'data');
 
+// Ensure storage directory exists
+if (!fs.existsSync(STORAGE_DIR)) {
+  fs.mkdirSync(STORAGE_DIR, { recursive: true });
+}
+
 /**
- * Initialize the storage directory
+ * Saves API documentation to the local filesystem
  */
-export async function initStorage() {
+export async function saveDocumentation(apiName, data) {
+  const filePath = path.join(STORAGE_DIR, `${apiName}.json`);
+
   try {
-    // Check if storage directory exists
+    // Create storage directory if it doesn't exist
     if (!fs.existsSync(STORAGE_DIR)) {
-      await fsPromises.mkdir(STORAGE_DIR, { recursive: true });
-      console.log(`Created storage directory at ${STORAGE_DIR}`);
+      fs.mkdirSync(STORAGE_DIR, { recursive: true });
     }
+
+    // Write the data to file
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    console.log(`Documentation for ${apiName} saved to ${filePath}`);
+
+    return true;
   } catch (error) {
-    console.error('Error initializing storage:', error);
+    console.error(`Error saving ${apiName} documentation:`, error);
     throw error;
   }
 }
 
 /**
- * Save documentation for a service
- * @param {string} service - Service name (e.g., 'twilio', 'sendgrid')
- * @param {object} data - Documentation data to save
+ * Retrieves API documentation from the local filesystem
  */
-export async function saveDocumentation(service, data) {
+export async function getDocumentation(apiName) {
+  const filePath = path.join(STORAGE_DIR, `${apiName}.json`);
+
   try {
-    // Ensure storage is initialized
-    await initStorage();
-
-    // Ensure data directory exists
-    if (!fs.existsSync(STORAGE_DIR)) {
-      await fsPromises.mkdir(STORAGE_DIR, { recursive: true });
-    }
-
-    // Add timestamp
-    data.lastUpdated = new Date().toISOString();
-
-    // Create file path
-    const filePath = path.join(STORAGE_DIR, `${service}.json`);
-
-    // Convert to pretty-printed JSON and save
-    const jsonData = JSON.stringify(data, null, 2);
-    await fsPromises.writeFile(filePath, jsonData, 'utf8');
-
-    console.log(`Saved ${service} documentation to ${filePath}`);
-    return { success: true, path: filePath };
-  } catch (error) {
-    console.error(`Error saving ${service} documentation:`, error);
-    throw error;
-  }
-}
-
-/**
- * Get documentation for a service
- * @param {string} service - Service name (e.g., 'twilio', 'sendgrid')
- * @returns {object} Documentation data
- */
-export async function getDocumentation(service) {
-  try {
-    // Create file path
-    const filePath = path.join(STORAGE_DIR, `${service}.json`);
-
-    // Check if file exists
     if (!fs.existsSync(filePath)) {
-      throw new Error(`Documentation for ${service} not found`);
+      throw new Error(`Documentation for ${apiName} not found`);
     }
 
-    // Read and parse file
-    const jsonData = await fsPromises.readFile(filePath, 'utf8');
-    const data = JSON.parse(jsonData);
-
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     return data;
   } catch (error) {
-    console.error(`Error getting ${service} documentation:`, error);
+    console.error(`Error retrieving ${apiName} documentation:`, error);
     throw error;
   }
 }
 
 /**
- * List all available documentation services
- * @returns {Array<string>} List of service names
+ * Lists all available API documentation
  */
-export async function listDocumentations() {
+export async function listAllDocumentation() {
   try {
-    // Ensure storage is initialized
-    await initStorage();
+    if (!fs.existsSync(STORAGE_DIR)) {
+      return [];
+    }
 
-    // Read directory
-    const files = await fsPromises.readdir(STORAGE_DIR);
-
-    // Filter JSON files and remove extension
-    const services = files
+    const files = fs.readdirSync(STORAGE_DIR);
+    return files
       .filter((file) => file.endsWith('.json'))
       .map((file) => file.replace('.json', ''));
-
-    return services;
   } catch (error) {
-    console.error('Error listing documentations:', error);
+    console.error('Error listing documentation:', error);
     throw error;
   }
 }
 
 /**
- * Get metadata about all available documentations
- * @returns {Array<object>} List of documentation metadata
+ * Retrieves metadata for all available API documentation
+ * This returns basic information about each API without the full documentation
  */
 export async function getDocumentationMetadata() {
   try {
-    // Get list of services
-    const services = await listDocumentations();
+    if (!fs.existsSync(STORAGE_DIR)) {
+      return [];
+    }
 
-    // Get metadata for each service
-    const metadata = await Promise.all(
-      services.map(async (service) => {
-        try {
-          const data = await getDocumentation(service);
+    const files = fs.readdirSync(STORAGE_DIR);
+    const metadata = [];
 
-          return {
-            service,
-            name: data.name || service,
-            description: data.description || '',
-            endpointCount: data.endpoints?.length || 0,
-            categoryCount: data.categories?.length || 0,
-            lastUpdated: data.lastUpdated || null,
-          };
-        } catch (error) {
-          console.error(`Error getting metadata for ${service}:`, error);
-          return {
-            service,
-            name: service,
-            description: 'Error loading metadata',
-            error: error.message,
-          };
-        }
-      })
-    );
+    for (const file of files.filter((file) => file.endsWith('.json'))) {
+      const apiName = file.replace('.json', '');
+      const filePath = path.join(STORAGE_DIR, file);
+
+      try {
+        const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        metadata.push({
+          service: apiName,
+          name: data.name || data.title || apiName,
+          title: data.title || apiName,
+          description: data.description || '',
+          version: data.version || '',
+          endpointCount: data.endpoints?.length || 0,
+          lastUpdated: fs.statSync(filePath).mtime,
+        });
+      } catch (error) {
+        console.error(`Error reading metadata for ${apiName}:`, error);
+        // Skip this file if there's an error
+      }
+    }
 
     return metadata;
   } catch (error) {
-    console.error('Error getting documentation metadata:', error);
+    console.error('Error retrieving documentation metadata:', error);
     throw error;
   }
 }

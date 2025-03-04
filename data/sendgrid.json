@@ -1,0 +1,179 @@
+{
+  "name": "SendGrid",
+  "title": "SendGrid API Documentation",
+  "description": "SendGrid email delivery and analytics services",
+  "baseUrl": "https://api.sendgrid.com",
+  "lastUpdated": "2025-03-04T20:15:41.069Z",
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/v3/stats",
+      "description": "Retrieve global email statistics between a given date range",
+      "category": "Email Analytics",
+      "parameters": [
+        {
+          "name": "start_date",
+          "description": "The starting date of the statistics to retrieve (YYYY-MM-DD)",
+          "required": true
+        },
+        {
+          "name": "end_date",
+          "description": "The end date of the statistics to retrieve (YYYY-MM-DD)",
+          "required": false
+        },
+        {
+          "name": "aggregated_by",
+          "description": "How to group the statistics (day, week, or month)",
+          "required": false,
+          "enum": [
+            "day",
+            "week",
+            "month"
+          ]
+        },
+        {
+          "name": "limit",
+          "description": "The number of results to return",
+          "required": false,
+          "type": "integer"
+        },
+        {
+          "name": "offset",
+          "description": "The point in the list to begin retrieving results",
+          "required": false,
+          "type": "integer"
+        }
+      ],
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer <<YOUR_API_KEY_HERE>>",
+          "required": true
+        },
+        {
+          "name": "on-behalf-of",
+          "description": "Make API calls from a parent account on behalf of Subusers or customer accounts",
+          "required": false
+        }
+      ],
+      "responses": [
+        {
+          "status": 200,
+          "description": "Success",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "description": "The date the stats were gathered"
+                },
+                "stats": {
+                  "type": "array",
+                  "description": "The individual email activity stats",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Category statistics are available for the previous thirteen months only."
+      ],
+      "example": "const client = require(\"@sendgrid/client\");\nclient.setApiKey(process.env.SENDGRID_API_KEY);\n\nconst queryParams = { start_date: \"2009-07-06\" };\n\nconst request = {\n  url: `/v3/stats`,\n  method: \"GET\",\n  qs: queryParams,\n};\n\nclient\n  .request(request)\n  .then(([response, body]) => {\n    console.log(response.statusCode);\n    console.log(response.body);\n  })\n  .catch((error) => {\n    console.error(error);\n  });"
+    }
+  ],
+  "categories": [
+    {
+      "name": "Email Analytics",
+      "description": "Track and analyze email performance metrics",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v3/stats",
+          "description": "Retrieve global email statistics between a given date range",
+          "category": "Email Analytics",
+          "parameters": [
+            {
+              "name": "start_date",
+              "description": "The starting date of the statistics to retrieve (YYYY-MM-DD)",
+              "required": true
+            },
+            {
+              "name": "end_date",
+              "description": "The end date of the statistics to retrieve (YYYY-MM-DD)",
+              "required": false
+            },
+            {
+              "name": "aggregated_by",
+              "description": "How to group the statistics (day, week, or month)",
+              "required": false,
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ]
+            },
+            {
+              "name": "limit",
+              "description": "The number of results to return",
+              "required": false,
+              "type": "integer"
+            },
+            {
+              "name": "offset",
+              "description": "The point in the list to begin retrieving results",
+              "required": false,
+              "type": "integer"
+            }
+          ],
+          "headers": [
+            {
+              "name": "Authorization",
+              "description": "Bearer <<YOUR_API_KEY_HERE>>",
+              "required": true
+            },
+            {
+              "name": "on-behalf-of",
+              "description": "Make API calls from a parent account on behalf of Subusers or customer accounts",
+              "required": false
+            }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Success",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": "string",
+                      "description": "The date the stats were gathered"
+                    },
+                    "stats": {
+                      "type": "array",
+                      "description": "The individual email activity stats",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "notes": [
+            "Category statistics are available for the previous thirteen months only."
+          ],
+          "example": "const client = require(\"@sendgrid/client\");\nclient.setApiKey(process.env.SENDGRID_API_KEY);\n\nconst queryParams = { start_date: \"2009-07-06\" };\n\nconst request = {\n  url: `/v3/stats`,\n  method: \"GET\",\n  qs: queryParams,\n};\n\nclient\n  .request(request)\n  .then(([response, body]) => {\n    console.log(response.statusCode);\n    console.log(response.body);\n  })\n  .catch((error) => {\n    console.error(error);\n  });"
+        }
+      ]
+    }
+  ]
+}

@@ -1,25 +1,25 @@
-// src/app/api/test/twilio/route.js
+// src/app/api/test/sendgrid/route.js
 import { NextResponse } from 'next/server';
-import { fetchTwilioDocs } from '../../../../lib/fetchers/twilio';
+import { fetchSendGridDocumentation } from '../../../../lib/fetchers/sendgrid';
 import { getDocumentation } from '../../../../lib/storage';
 
 export async function GET(request) {
   try {
-    console.log('Testing Twilio API fetch...');
+    console.log('Testing SendGrid API fetch...');
 
     // First, try to get existing documentation
     let docs = null;
     try {
-      docs = await getDocumentation('twilio');
-      console.log('Found existing Twilio documentation');
+      docs = await getDocumentation('sendgrid');
+      console.log('Found existing SendGrid documentation');
     } catch (error) {
       console.log('No existing documentation found, fetching new...');
     }
 
     // If no docs exist or we want to force a refresh
     if (!docs) {
-      console.log('Fetching new Twilio documentation...');
-      docs = await fetchTwilioDocs();
+      console.log('Fetching new SendGrid documentation...');
+      docs = await fetchSendGridDocumentation();
       console.log('Documentation fetched successfully');
     }
 
@@ -29,7 +29,7 @@ export async function GET(request) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Error in Twilio test route:', error);
+    console.error('Error in SendGrid test route:', error);
     return NextResponse.json(
       {
         success: false,
