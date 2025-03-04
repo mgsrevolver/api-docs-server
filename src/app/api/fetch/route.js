@@ -13,9 +13,14 @@ function ensureDataDir() {
 
 // Save documentation to disk
 function saveDocs(docs) {
-  const dataDir = ensureDataDir();
+  const docsDir = path.join(process.cwd(), 'data', 'docs');
+  if (!fs.existsSync(docsDir)) {
+    fs.mkdirSync(docsDir, { recursive: true });
+  }
+
+  // Save combined documentation to docs directory
   fs.writeFileSync(
-    path.join(dataDir, 'documentation.json'),
+    path.join(docsDir, 'documentation.json'),
     JSON.stringify(docs, null, 2)
   );
 }
@@ -64,9 +69,6 @@ export async function GET(request) {
 
     // Fetch documentation
     const { results, errors } = await fetchAllDocumentation();
-
-    // Save to disk
-    saveDocs(results);
 
     return new Response(
       JSON.stringify({

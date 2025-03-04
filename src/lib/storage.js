@@ -19,27 +19,18 @@ if (!fs.existsSync(DOCS_DIR)) {
  * Saves API documentation to the local filesystem
  */
 export async function saveDocumentation(apiName, data) {
-  const filePath = path.join(STORAGE_DIR, `${apiName}.json`);
   const docsFilePath = path.join(DOCS_DIR, `${apiName.toLowerCase()}.json`);
 
   try {
-    // Create storage directory if it doesn't exist
-    if (!fs.existsSync(STORAGE_DIR)) {
-      fs.mkdirSync(STORAGE_DIR, { recursive: true });
-    }
-
     // Create docs directory if it doesn't exist
     if (!fs.existsSync(DOCS_DIR)) {
       fs.mkdirSync(DOCS_DIR, { recursive: true });
     }
 
-    // Write the data to both locations for backward compatibility
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    // Write the data only to the docs directory
     fs.writeFileSync(docsFilePath, JSON.stringify(data, null, 2));
 
-    console.log(
-      `Documentation for ${apiName} saved to ${filePath} and ${docsFilePath}`
-    );
+    console.log(`Documentation for ${apiName} saved to ${docsFilePath}`);
 
     return true;
   } catch (error) {

@@ -3,7 +3,7 @@
   "title": "SendGrid API Documentation",
   "description": "SendGrid email delivery and analytics services",
   "baseUrl": "https://api.sendgrid.com",
-  "lastUpdated": "2025-03-04T21:09:07.314Z",
+  "lastUpdated": "2025-03-04T21:31:03.522Z",
   "endpoints": [
     {
       "method": "GET",
@@ -85,6 +85,142 @@
         "Category statistics are available for the previous thirteen months only."
       ],
       "example": "const client = require(\"@sendgrid/client\");\nclient.setApiKey(process.env.SENDGRID_API_KEY);\n\nconst queryParams = { start_date: \"2009-07-06\" };\n\nconst request = {\n  url: `/v3/stats`,\n  method: \"GET\",\n  qs: queryParams,\n};\n\nclient\n  .request(request)\n  .then(([response, body]) => {\n    console.log(response.statusCode);\n    console.log(response.body);\n  })\n  .catch((error) => {\n    console.error(error);\n  });"
+    },
+    {
+      "method": "GET",
+      "path": "/v3/messages/{msg_id}",
+      "description": "Get all of the details about the specified message",
+      "category": "Email Activity",
+      "parameters": [
+        {
+          "name": "msg_id",
+          "description": "The ID of the message you are requesting details for",
+          "required": true,
+          "type": "string",
+          "in": "path"
+        }
+      ],
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer <<YOUR_API_KEY_HERE>>",
+          "required": true
+        }
+      ],
+      "responses": [
+        {
+          "status": 200,
+          "description": "Success",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "from_email": {
+                "type": "string",
+                "format": "email",
+                "description": "The 'From' email address used to deliver the message"
+              },
+              "msg_id": {
+                "type": "string",
+                "description": "A unique ID assigned to the message"
+              },
+              "subject": {
+                "type": "string",
+                "description": "The email's subject line"
+              },
+              "to_email": {
+                "type": "string",
+                "format": "email",
+                "description": "The intended recipient's email address"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "processed",
+                  "delivered",
+                  "not_delivered"
+                ],
+                "description": "The message's status"
+              },
+              "template_id": {
+                "type": "string",
+                "description": "The ID associated with a Twilio SendGrid email template"
+              },
+              "asm_group_id": {
+                "type": "integer",
+                "description": "The unsubscribe group associated with this email",
+                "minimum": 1
+              },
+              "teammate": {
+                "type": "string",
+                "description": "Teammate's username",
+                "pattern": "^$|^[A-Za-z0-9]+",
+                "minLength": 0,
+                "maxLength": 64
+              },
+              "api_key_id": {
+                "type": "string",
+                "description": "The ID of the API Key used to authenticate the sending request",
+                "pattern": "^[A-Za-z0-9]+",
+                "minLength": 3,
+                "maxLength": 50
+              },
+              "events": {
+                "type": "array",
+                "description": "List of events related to email message",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "originating_ip": {
+                "type": "string",
+                "format": "ipv4",
+                "description": "This is the IP of the user who sent the message"
+              },
+              "categories": {
+                "type": "array",
+                "description": "Categories users associated to the message",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "unique_args": {
+                "type": "string",
+                "description": "JSON hash of key-value pairs associated with the message"
+              },
+              "outbound_ip": {
+                "type": "string",
+                "format": "ipv4",
+                "description": "IP used to send to the remote Mail Transfer Agent"
+              },
+              "outbound_ip_type": {
+                "type": "string",
+                "enum": [
+                  "dedicated",
+                  "shared"
+                ],
+                "description": "Whether or not the outbound IP is dedicated vs shared"
+              }
+            }
+          }
+        },
+        {
+          "status": 400,
+          "description": "Bad Request"
+        },
+        {
+          "status": 404,
+          "description": "Not Found"
+        },
+        {
+          "status": 429,
+          "description": "Too Many Requests"
+        }
+      ],
+      "notes": [
+        "You must purchase additional email activity history to gain access to the Email Activity Feed API.",
+        "The Email Activity API allows you to query all of your stored messages, query individual messages, and download a CSV with data about the stored messages."
+      ],
+      "example": "const client = require(\"@sendgrid/client\");\nclient.setApiKey(process.env.SENDGRID_API_KEY);\n\nconst msg_id = \"msg_id\";\n\nconst request = {\n  url: `/v3/messages/${msg_id}`,\n  method: \"GET\",\n};\n\nclient\n  .request(request)\n  .then(([response, body]) => {\n    console.log(response.statusCode);\n    console.log(response.body);\n  })\n  .catch((error) => {\n    console.error(error);\n  });"
     }
   ],
   "categories": [
@@ -172,6 +308,148 @@
             "Category statistics are available for the previous thirteen months only."
           ],
           "example": "const client = require(\"@sendgrid/client\");\nclient.setApiKey(process.env.SENDGRID_API_KEY);\n\nconst queryParams = { start_date: \"2009-07-06\" };\n\nconst request = {\n  url: `/v3/stats`,\n  method: \"GET\",\n  qs: queryParams,\n};\n\nclient\n  .request(request)\n  .then(([response, body]) => {\n    console.log(response.statusCode);\n    console.log(response.body);\n  })\n  .catch((error) => {\n    console.error(error);\n  });"
+        }
+      ]
+    },
+    {
+      "name": "Email Activity",
+      "description": "Query and inspect details about your sent messages",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/v3/messages/{msg_id}",
+          "description": "Get all of the details about the specified message",
+          "category": "Email Activity",
+          "parameters": [
+            {
+              "name": "msg_id",
+              "description": "The ID of the message you are requesting details for",
+              "required": true,
+              "type": "string",
+              "in": "path"
+            }
+          ],
+          "headers": [
+            {
+              "name": "Authorization",
+              "description": "Bearer <<YOUR_API_KEY_HERE>>",
+              "required": true
+            }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Success",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "from_email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The 'From' email address used to deliver the message"
+                  },
+                  "msg_id": {
+                    "type": "string",
+                    "description": "A unique ID assigned to the message"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": "The email's subject line"
+                  },
+                  "to_email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The intended recipient's email address"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "processed",
+                      "delivered",
+                      "not_delivered"
+                    ],
+                    "description": "The message's status"
+                  },
+                  "template_id": {
+                    "type": "string",
+                    "description": "The ID associated with a Twilio SendGrid email template"
+                  },
+                  "asm_group_id": {
+                    "type": "integer",
+                    "description": "The unsubscribe group associated with this email",
+                    "minimum": 1
+                  },
+                  "teammate": {
+                    "type": "string",
+                    "description": "Teammate's username",
+                    "pattern": "^$|^[A-Za-z0-9]+",
+                    "minLength": 0,
+                    "maxLength": 64
+                  },
+                  "api_key_id": {
+                    "type": "string",
+                    "description": "The ID of the API Key used to authenticate the sending request",
+                    "pattern": "^[A-Za-z0-9]+",
+                    "minLength": 3,
+                    "maxLength": 50
+                  },
+                  "events": {
+                    "type": "array",
+                    "description": "List of events related to email message",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "originating_ip": {
+                    "type": "string",
+                    "format": "ipv4",
+                    "description": "This is the IP of the user who sent the message"
+                  },
+                  "categories": {
+                    "type": "array",
+                    "description": "Categories users associated to the message",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "unique_args": {
+                    "type": "string",
+                    "description": "JSON hash of key-value pairs associated with the message"
+                  },
+                  "outbound_ip": {
+                    "type": "string",
+                    "format": "ipv4",
+                    "description": "IP used to send to the remote Mail Transfer Agent"
+                  },
+                  "outbound_ip_type": {
+                    "type": "string",
+                    "enum": [
+                      "dedicated",
+                      "shared"
+                    ],
+                    "description": "Whether or not the outbound IP is dedicated vs shared"
+                  }
+                }
+              }
+            },
+            {
+              "status": 400,
+              "description": "Bad Request"
+            },
+            {
+              "status": 404,
+              "description": "Not Found"
+            },
+            {
+              "status": 429,
+              "description": "Too Many Requests"
+            }
+          ],
+          "notes": [
+            "You must purchase additional email activity history to gain access to the Email Activity Feed API.",
+            "The Email Activity API allows you to query all of your stored messages, query individual messages, and download a CSV with data about the stored messages."
+          ],
+          "example": "const client = require(\"@sendgrid/client\");\nclient.setApiKey(process.env.SENDGRID_API_KEY);\n\nconst msg_id = \"msg_id\";\n\nconst request = {\n  url: `/v3/messages/${msg_id}`,\n  method: \"GET\",\n};\n\nclient\n  .request(request)\n  .then(([response, body]) => {\n    console.log(response.statusCode);\n    console.log(response.body);\n  })\n  .catch((error) => {\n    console.error(error);\n  });"
         }
       ]
     }
