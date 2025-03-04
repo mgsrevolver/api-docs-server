@@ -1,0 +1,152 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+I am a novice developer who needs full code samples and basic explanations, not pseudocode. I only have experience with html/css/js (react, tailwind etc) and only a tiny bit. But I am a growth markeitng professional who is actually decent with design, and can get developers to use this thing.
+
+I am building an MCP server that would essentially:
+
+Pre-fetch and cache documentation from official API sources
+
+Structure it in a way that's optimized for LLM consumption
+
+Add a simple recommendation layer for common development tasks
+
+This is much more straightforward than building comprehensive documentation from scratch.
+
+Implementation Plan
+
+1. Documentation Fetching & Caching
+
+Set up periodic jobs to fetch documentation from official API sites
+
+Parse the HTML/Markdown into a clean, structured format
+
+Store in a simple database with appropriate indexing
+
+Update on a regular schedule (e.g., weekly)
+
+2. MCP Endpoint Structure
+
+javascript
+
+Copy
+
+// Simple endpoint structure app.post('/get-docs', (req, res) => { const { query, api, endpoint } = req.body; // If specific API and endpoint requested if (api && endpoint) { const docs = getSpecificDocs(api, endpoint); return res.json({ docs }); } // If natural language query if (query) { const recommendations = findRelevantAPIs(query); return res.json({ recommendations }); } // Fallback - list available APIs return res.json({ available_apis: listAvailableAPIs(), suggestion: "Try asking about a specific API or task" }); });
+
+3. Basic Recommendation Engine
+
+For queries like "how do I add email verification":
+
+Use simple keyword matching to identify the task category (email, verification)
+
+Return a list of relevant APIs with their specific endpoints
+
+Include a brief description of how each API addresses this need
+
+Highlight sponsored APIs if applicable
+
+Starting APIs
+
+For your initial version, focus on 3-5 popular APIs with clear documentation:
+
+Twilio - Communication services (SMS, email verification)
+
+SendGrid - Email services
+
+daily.co - Video calling (since you mentioned experience with it)
+
+Cloudinary - Media management
+
+Algolia - Search functionality
+
+Technical Requirements
+
+Backend: Node.js with Express for the MCP server
+
+Storage: Simple JSON files or SQLite for starting out
+
+Scraping: Basic HTML parsing library (like Cheerio)
+
+Scheduling: Simple cron jobs for updates
+
+This approach:
+
+Is achievable for a novice developer
+
+Provides immediate value to users
+
+Has a clear path to monetization
+
+Doesn't require you to maintain documentation content
+
+The beauty of this approach is that you're not recreating what already exists - you're just making it accessible within the AI assistant workflow, which is exactly what MCP is designed for.
+
+We've successfully built the foundation of your MCP (Machine Context Plugin) documentation server using Next.js:
+
+Created a Next.js project structure with the App Router architecture
+Set up API endpoints for:
+
+/api/docs - The main endpoint that AI assistants will query
+/api/fetch - An endpoint to refresh documentation from API sources
+Various test endpoints to verify functionality
+
+
+Implemented documentation fetchers for:
+
+Twilio API documentation
+SendGrid API documentation
+(Placeholder for Cloudinary)
+
+
+Built a simple storage system using JSON files
+Created a recommendation engine that matches natural language queries to relevant APIs
+Fixed configuration issues to ensure the app runs properly
+Debugged and resolved issues with file writing and API responses
+
+Next Steps
+To complete your MCP documentation server, here are the key next steps:
+
+Complete the documentation fetchers:
+
+Improve HTML parsing for more accurate extraction
+Add Cloudinary documentation fetcher
+Consider adding more APIs based on user needs
+
+
+Set up scheduled refreshes:
+
+Deploy to Vercel
+Configure Vercel Cron Jobs to refresh documentation daily
+
+
+Enhance the recommendation engine:
+
+Add more comprehensive keyword matching
+Implement better natural language processing
+Create categorization for common development tasks
+
+
+Test with AI assistants:
+
+Verify that Claude/other AIs can consume your API effectively
+Refine response format based on how AI assistants use it
+
+
+Document your MCP:
+
+Finalize your README
+Create clear integration instructions
+Add examples of how to use it with various AI assistants
+
+
+Distribution:
+
+Submit to MCP directories
+Share with developer communities
+Gather feedback from early users
+
+
+
+The core functionality is working now, so you're well on your way to having a complete and useful MCP that developers can integrate with their AI assistants!
